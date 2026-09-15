@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>휴마인 카드뉴스 · 텍스트 레이아웃 5종</title>
+  <link rel="stylesheet" href="cardnews.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #edf0f4; color: #17202c; font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+    .page { max-width: 1560px; margin: auto; padding: 48px 32px 64px; }
+    .eyebrow { margin: 0 0 16px; color: #59677d; font-size: 12px; letter-spacing: .16em; font-weight: 700; }
+    h1 { font-size: clamp(24px,3vw,40px); letter-spacing: -.04em; margin: 0 0 16px; }
+    .intro { max-width: 860px; font-size: 16px; line-height: 1.8; color: #59677d; margin: 0; }
+    .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin: 28px 0 32px; border-top: 1px solid #d3d9e2; padding-top: 20px; }
+    .specs { font-size: 13px; color: #546176; }
+    .toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 650; cursor: pointer; }
+    .toggle input { accent-color: #183a68; width: 18px; height: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 36px 24px; }
+    .tile { min-width: 0; }
+    .tile h2 { font-size: 17px; margin: 0 0 12px; letter-spacing: -.03em; }
+    .tile h2 b { font-size: 12px; margin-right: 10px; color: #738298; font-weight: 500; }
+    .frame { width: 100%; aspect-ratio: 4/5; position: relative; }
+    .frame .humine-card { transform: scale(var(--preview-scale, .3)); transform-origin: top left; }
+    .note { margin: 14px 0 0; font-size: 13px; line-height: 1.75; color: #59677d; }
+    .note strong { color: #26364c; font-weight: 600; }
+    .card-media { background: #526477; }
+    .wireframe { background: linear-gradient(135deg,#697f92,#304359); }
+    .wireframe::before { content: ""; position: absolute; inset: 0; opacity: .16; background-image: linear-gradient(#d7e5f6 2px,transparent 2px),linear-gradient(90deg,#d7e5f6 2px,transparent 2px); background-size: 90px 90px; }
+    .wireframe::after { content: "VISUAL AREA"; position: absolute; top: 180px; left: 80px; font-size: 30px; letter-spacing: .18em; color: #c0cfdf; opacity: .7; font-weight: 500; }
+    .summary { padding: 28px 32px; border: 1px solid #d3d9e2; border-radius: 12px; background: #f7f9fc; align-self: start; margin-top: 34px; }
+    .summary h2 { font-size: 22px; line-height: 1.5; }
+    .summary ul { padding-left: 18px; font-size: 14px; line-height: 2; color: #526176; }
+    .status { margin-top: 22px; font-size: 12px; line-height: 1.7; color: #6a7687; }
+    @media(max-width: 1000px) { .grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media(max-width: 620px) { .page { padding: 30px 20px; } .grid { grid-template-columns: 1fr; } .summary { margin-top: 0; } }
+  </style>
+</head>
+<body>
+<main class="page">
+  <p class="eyebrow">HUMINE / CONTENT SYSTEM / 01</p>
+  <h1>이미지보다 먼저, 글이 놓일 자리를 정합니다.</h1>
+  <p class="intro">보내주신 참고 이미지의 5가지 틀을 재구성했습니다. 제목과 본문의 위치·정렬·여백을 먼저 확인하는 시안입니다. 배경, 색상, 글꼴과 문구는 검토용이며 실제 콘텐츠나 확정 브랜드 디자인이 아닙니다.</p>
+  <div class="toolbar">
+    <div class="specs">1080 × 1350 · 바깥 여백 80 · 제목 60 / 본문 40 · 간격 단위 8px</div>
+    <label class="toggle"><input type="checkbox" id="guides">텍스트 안전 영역 보기</label>
+  </div>
+  <section class="grid" aria-label="카드뉴스 레이아웃 다섯 종류">
+    <section class="tile">
+      <h2><b>01</b>표지 · 하단 제목</h2>
+      <div class="frame"><article class="humine-card card--cover" aria-label="표지 레이아웃">
+        <div class="card-media wireframe"></div><div class="card-shade"></div>
+        <header class="card-copy"><p class="card-kicker">HUMINE INSIGHT · 콘텐츠 예시</p><h1 class="card-title"><em>AI 트렌드를</em><br>업무의 언어로</h1></header>
+        <footer class="card-footer"><span class="card-brand">HUMINE</span></footer>
+        <div class="layout-guides"><span class="guide-label">LEFT 80 / RIGHT 80</span></div>
+      </article></div>
+      <p class="note"><strong>왼쪽 정렬 / 텍스트 시작 Y 888</strong><br>상단은 시각 자료, 하단은 두 줄 제목. 브랜드는 맨 아래 중앙에 둡니다.</p>
+    </section>
+    <section class="tile">
+      <h2><b>02</b>본문 · 전체 그라데이션</h2>
+      <div class="frame"><article class="humine-card card--gradient" aria-label="전체 그라데이션 레이아웃">
+        <div class="card-media wireframe"></div><div class="card-shade"></div>
+        <section class="card-copy"><h2 class="card-title">변화의 의미부터 읽습니다.</h2><p class="card-body">새로운 기능을 소개하는 데서 한 걸음 더.<br>어떤 업무가 달라지는지 살펴보고,<br>사람에게 필요한 역량을 정리합니다.</p></section>
+        <footer class="card-footer"><span>레이아웃 검토용 예시 문구</span><span>02 / 05</span></footer>
+        <div class="layout-guides"><span class="guide-label">LEFT 80 / RIGHT 80</span></div>
+      </article></div>
+      <p class="note"><strong>왼쪽 정렬 / 제목 Y 776 / 본문 간격 48</strong><br>배경이 아래로 어두워집니다. 제목과 본문은 일정한 왼쪽 선을 따릅니다.</p>
+    </section>
+    <section class="tile">
+      <h2><b>03</b>본문 · 하단 분할</h2>
+      <div class="frame"><article class="humine-card card--split" aria-label="하단 분할 레이아웃">
+        <div class="card-media wireframe"></div><div class="card-shade"></div>
+        <section class="card-copy"><h2 class="card-title">업무 장면으로 설명합니다.</h2><p class="card-body">입력 자료, 작업 과정, 결과물.<br>세 가지를 따라가며 활용법을 설명하고,<br>사람이 검토할 지점도 함께 보여줍니다.</p></section>
+        <footer class="card-footer"><span>레이아웃 검토용 예시 문구</span><span>03 / 05</span></footer>
+        <div class="layout-guides"><span class="guide-label">LEFT 80 / RIGHT 80</span></div>
+      </article></div>
+      <p class="note"><strong>상단 이미지 650 / 제목 Y 740</strong><br>시각 자료와 설명을 분리합니다. 이미지 아래 90px 뒤에 제목이 시작됩니다.</p>
+    </section>
+    <section class="tile">
+      <h2><b>04</b>본문 · 중앙 오버레이</h2>
+      <div class="frame"><article class="humine-card card--overlay" aria-label="중앙 오버레이 레이아웃">
+        <div class="card-media wireframe"></div><div class="card-shade"></div>
+        <section class="card-copy"><h2 class="card-title">기술에서 역량으로.</h2><p class="card-body">업무가 달라지면<br>배워야 할 것도 달라집니다.<br>변화를 이해하고 실습으로 연결합니다.</p></section>
+        <footer class="card-footer"><span>레이아웃 검토용 예시 문구</span><span>04 / 05</span></footer>
+        <div class="layout-guides"><span class="guide-label">CENTER X 540 / BLOCK CENTER Y 850</span></div>
+      </article></div>
+      <p class="note"><strong>가운데 정렬 / 문구 블록 중심 Y 850</strong><br>참고 이미지처럼 가로 중앙·세로 중앙보다 아래에 메시지를 모읍니다.</p>
+    </section>
+    <section class="tile">
+      <h2><b>05</b>마무리 · CTA 패널</h2>
+      <div class="frame"><article class="humine-card card--cta" aria-label="CTA 레이아웃">
+        <div class="card-media wireframe"></div><div class="card-shade"></div>
+        <section class="cta-panel"><h2 class="card-title">다음 AI 트렌드도<br>업무와 연결해 보세요.</h2><p class="card-body">변화를 읽고, 필요한 역량을 찾습니다.</p><p class="cta-brand card-brand">HUMINE</p></section>
+        <div class="layout-guides"><span class="guide-label">PANEL 768 × 744 / CENTER</span></div>
+      </article></div>
+      <p class="note"><strong>중앙 패널 768 × 744 / 내부 여백 80</strong><br>메시지는 중앙, 브랜드는 패널 하단에 고정합니다. 링크나 상품 정보는 추후 연결합니다.</p>
+    </section>
+    <aside class="summary">
+      <h2>틀은 같게.<br>문구는 내용에 맞게.</h2>
+      <ul><li>카드별 padding을 따로 바꾸지 않습니다.</li><li>제목·본문·출처의 크기를 역할별로 통일합니다.</li><li>긴 문구는 줄이거나 장을 나눕니다.</li><li>이미지를 넣어도 텍스트 위치는 유지합니다.</li><li>초록 안내선은 미리보기 전용입니다.</li></ul>
+      <p class="status">5종은 레이아웃 유형이며 전체 카드뉴스를 반드시 5장으로 제한하는 규칙은 아닙니다. CSS와 이 HTML은 같은 폴더에 두고 사용합니다.</p>
+    </aside>
+  </section>
+</main>
+<script>
+  const frames = document.querySelectorAll('.frame');
+  const resize = new ResizeObserver(entries => entries.forEach(({target,contentRect}) => target.style.setProperty('--preview-scale', contentRect.width / 1080)));
+  frames.forEach(frame => resize.observe(frame));
+  document.getElementById('guides').addEventListener('change', e => document.body.classList.toggle('show-guides', e.target.checked));
+</script>
+</body>
+</html>

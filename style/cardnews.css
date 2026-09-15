@@ -1,0 +1,100 @@
+/* Humine card layout v0.1 — reference-based working draft, not final brand rules. */
+:root {
+  --card-width: 1080px;
+  --card-height: 1350px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 80px;
+  --space-8: 96px;
+  --card-padding: var(--space-7);
+  --copy-width: calc(var(--card-width) - var(--card-padding) * 2);
+  --font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --title-size: 60px;
+  --cover-title-size: 88px;
+  --body-size: 40px;
+  --cta-title-size: 56px;
+  --cta-body-size: 32px;
+  --cover-title-line-height: 1.16;
+  --label-size: 28px;
+  --source-size: 24px;
+  --title-line-height: 1.22;
+  --body-line-height: 1.55;
+  --text-color: #f7f8fa;
+  --muted-color: #c2c8d1;
+  --surface-color: #11151d;
+  --accent-color: #7dc9ff;
+  --radius-card: 48px;
+  --cover-copy-top: 888px;
+  --gradient-copy-top: 776px;
+  --split-media-height: 650px;
+  --split-copy-top: 740px;
+  --overlay-copy-center: 850px;
+  --cta-panel-width: 768px;
+  --cta-panel-height: 744px;
+  --footer-bottom: 64px;
+  --content-bottom: 1160px;
+}
+
+.humine-card, .humine-card *, .humine-card *::before, .humine-card *::after {
+  box-sizing: border-box;
+}
+.humine-card {
+  position: relative;
+  isolation: isolate;
+  width: var(--card-width);
+  height: var(--card-height);
+  flex: none;
+  background: var(--surface-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+}
+.humine-card :where(h1,h2,p,figure) { margin: 0; }
+.humine-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.card-media { position: absolute; inset: 0; z-index: -2; }
+.card-shade { position: absolute; inset: 0; z-index: -1; }
+.card-copy { position: absolute; left: var(--card-padding); width: var(--copy-width); }
+.card-kicker { margin-bottom: var(--space-3) !important; font-size: var(--label-size); line-height: 1.4; font-weight: 600; }
+.card-title { font-size: var(--title-size); line-height: var(--title-line-height); font-weight: 800; letter-spacing: -.035em; word-break: keep-all; overflow-wrap: break-word; }
+.card-title em { color: var(--accent-color); font-style: normal; }
+.card-body { margin-top: var(--space-5) !important; font-size: var(--body-size); line-height: var(--body-line-height); font-weight: 500; letter-spacing: -.025em; word-break: keep-all; overflow-wrap: break-word; }
+.card-footer { position: absolute; left: var(--card-padding); right: var(--card-padding); bottom: var(--footer-bottom); display: flex; justify-content: space-between; align-items: end; gap: var(--space-4); font-size: var(--source-size); line-height: 1.4; color: var(--muted-color); }
+.card-footer span:first-child { max-width: 780px; }
+.card-brand { font-weight: 800; letter-spacing: .12em; }
+
+.card--cover .card-shade { background: linear-gradient(180deg,rgba(0,0,0,.05) 20%,rgba(0,0,0,.55) 57%,#090c12 100%); }
+.card--cover .card-copy { top: var(--cover-copy-top); }
+.card--cover .card-title { font-size: var(--cover-title-size); line-height: var(--cover-title-line-height); }
+.card--cover .card-footer { justify-content: center; }
+
+.card--gradient .card-shade { background: linear-gradient(180deg,transparent 25%,rgba(11,14,20,.6) 47%,#0b0e14 66%); }
+.card--gradient .card-copy { top: var(--gradient-copy-top); }
+
+.card--split .card-media { height: var(--split-media-height); bottom: auto; }
+.card--split .card-copy { top: var(--split-copy-top); }
+.card--split .card-shade { display: none; }
+
+.card--overlay .card-shade { background: rgba(9,12,18,.77); }
+.card--overlay .card-copy { top: var(--overlay-copy-center); transform: translateY(-50%); text-align: center; }
+.card--overlay .card-body { max-width: 840px; margin-left: auto; margin-right: auto; }
+
+.card--cta .card-shade { background: rgba(9,12,18,.65); }
+.cta-panel { position: absolute; width: var(--cta-panel-width); height: var(--cta-panel-height); left: 50%; top: 50%; transform: translate(-50%,-50%); border-radius: var(--radius-card); padding: var(--space-7); background: #f2f4f7; color: #20252e; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.cta-panel .card-title { font-size: var(--cta-title-size); }
+.cta-panel .card-body { font-size: var(--cta-body-size); color: #535e70; margin-top: var(--space-4) !important; }
+.cta-brand { position: absolute; bottom: var(--space-7); font-size: var(--cta-body-size); }
+
+/* Layout guides only; never included in export unless explicitly enabled. */
+.layout-guides { display: none; position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+.show-guides .layout-guides { display: block; }
+.layout-guides::before { content: ""; position: absolute; top: var(--space-7); left: var(--card-padding); right: var(--card-padding); height: calc(var(--content-bottom) - var(--space-7)); border: 2px dashed #77e4b0; }
+.layout-guides::after { content: ""; position: absolute; top: var(--content-bottom); left: 0; right: 0; border-top: 2px dashed #77e4b0; }
+.guide-label { position: absolute; top: var(--space-4); left: var(--card-padding); font-size: 24px; font-weight: 600; color: #9dffcf; background: #12291f; padding: 8px 16px; }
+
+@media print {
+  .layout-guides { display: none !important; }
+}
