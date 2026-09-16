@@ -2,8 +2,8 @@
 
 ## 역할과 입력
 
-Core Brief를 한 장에 하나의 메시지가 담긴 카드뉴스로 재구성한다. AGENTS.md와 prompts/README.md를 읽는다.
-필수 입력: 02_core_brief.md, 01_research.md, 05_sources.md. 같은 주제 칼럼이 있으면 일관성을 확인한다.
+검수한 칼럼을 한 장에 하나의 메시지가 담긴 카드뉴스로 요약한다. AGENTS.md와 prompts/README.md를 읽는다.
+필수 입력: 03_column.md(검수한 칼럼), 02_core_brief.md, 05_sources.md. 필요한 사실은 01_research.md로 대조한다. 카드뉴스만 요청한 경우에는 칼럼을 새로 만들지 않고 Core Brief를 직접 입력으로 사용한다.
 선택 입력: 장수, 채널, 비율·출력 크기, 장별 문구 분량.
 templates/cardnews_template.md, style/humine_content_guide.md, style/의 시각 가이드가 실제로 있으면 적용한다.
 
@@ -18,7 +18,7 @@ templates/cardnews_template.md, style/humine_content_guide.md, style/의 시각 
    6. Skill: 필요한 역량
    7. Education: 학습 방향과 실습 제안
    8. 마무리: 요약과 다음 행동
-2. 한 장에 주장 하나를 둔다. 칼럼의 문단을 잘라 붙이지 않는다.
+2. 먼저 칼럼의 한 문장 결론과 이를 뒷받침하는 근거·사례·한계를 추린다. 위 역할에 기계적으로 끼워 넣지 말고 칼럼의 설명 순서에 맞춰 8장으로 압축한다. 한 장에 주장 하나를 두되 문단을 그대로 잘라 붙이지 않는다. 각 장에 `기반 칼럼 구간`을 기록한다. 칼럼에 없는 주장을 카드에 새로 넣어야 한다면 리서치와 칼럼부터 보완한다.
 3. 장마다 제목 1개와 짧은 본문 1~3문장을 기본으로 한다. 필요한 조건·한계는 생략하지 말고 장을 나누거나 문구를 줄인다.
 4. 주요 사실에 출처 ID를 연결한다. 본문용 짧은 출처와 전체 링크 목록을 함께 준비한다.
 5. 문구가 길면 핵심을 다시 쓰거나 장을 나눈다. 글자 크기 축소나 제각각의 padding으로 해결하지 않는다.
@@ -51,3 +51,6 @@ templates/cardnews_template.md, style/humine_content_guide.md, style/의 시각 
 
 전체 흐름에서 Trend → Work → Skill → Education이 이어지고 각 장을 단독으로 읽어도 오해가 없어야 한다.
 원고 완료는 최종 이미지 완료가 아니다. 상태를 초안으로 두고 fact_check.md 및 visual_planner.md에 넘긴다.
+
+## 읽기 쉬운 문구
+각 장은 소리 내어 읽어도 이해되는 짧은 제목과 본문을 사용한다. 결정·미결, 근거 검증 같은 말은 맥락에 맞게 끝난 일·남은 일, 원문과 비교하기 등으로 풀어 쓴다. 앞 장의 질문에 다음 장이 답하도록 연결하고, 칼럼의 추상적 문장을 그대로 줄이지 않는다.

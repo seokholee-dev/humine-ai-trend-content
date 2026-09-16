@@ -115,8 +115,20 @@ def card_html(card, total, logo, background=None):
 def document(title, css, body, gallery=False):
     extra = "body{margin:0;background:#11151d}.card-media{background:linear-gradient(135deg,#697f92,#304359)}.card-note{margin-top:var(--space-3)!important;font-size:var(--label-size);line-height:1.4}"
     if gallery:
-        extra += "body{background:#e9edf2;padding:24px;font-family:sans-serif}.page-title{font-size:20px;margin:0 0 20px}.cards{display:flex;flex-wrap:wrap;gap:24px}.frame{width:324px;height:405px}.frame .humine-card{transform:scale(.3);transform-origin:top left}"
-        body = '<h1 class="page-title">' + escape(title) + '</h1><div class="cards">' + body + '</div>'
+        extra += "body{background:#e9edf2;padding:24px;font-family:sans-serif}.page-title{font-size:24px;margin:0 0 20px}.cards{display:flex;flex-direction:column;align-items:center;gap:32px}.frame{width:min(100%,648px);aspect-ratio:4/5;position:relative}.frame .humine-card{position:absolute;transform:scale(.6);transform-origin:top left}.view-controls{margin:0 0 24px;display:flex;gap:12px}.view-controls button{font:inherit;padding:10px 16px;border:1px solid #64748b;border-radius:8px;background:white;color:#17212e;cursor:pointer}.view-controls button[aria-pressed=true]{background:#17212e;color:white}.overview .cards{flex-direction:row;flex-wrap:wrap;justify-content:center}.overview .frame{width:min(100%,324px)}@media(max-width:600px){body{padding:12px}.page-title{font-size:20px}}"
+        controls = '<nav class="view-controls" aria-label="카드 보기 방식"><button type="button" data-overview="false" aria-pressed="true">크게 읽기</button><button type="button" data-overview="true" aria-pressed="false">모아 보기</button></nav>'
+        script = """<script>
+const frames = document.querySelectorAll('.frame');
+function fit(frame) { frame.querySelector('.humine-card').style.transform = 'scale(' + frame.clientWidth / 1080 + ')'; }
+const observer = new ResizeObserver(entries => entries.forEach(entry => fit(entry.target)));
+frames.forEach(frame => { fit(frame); observer.observe(frame); });
+document.querySelectorAll('[data-overview]').forEach(button => button.addEventListener('click', () => {
+  document.body.classList.toggle('overview', button.dataset.overview === 'true');
+  document.querySelectorAll('[data-overview]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+  frames.forEach(fit);
+}));
+</script>"""
+        body = '<h1 class="page-title">' + escape(title) + '</h1>' + controls + '<div class="cards">' + body + '</div>' + script
     return '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + escape(title) + '</title><style>' + css + '\n' + extra + '</style></head><body>' + body + '</body></html>'
 
 

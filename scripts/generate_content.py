@@ -73,7 +73,9 @@ def prepare(root, topic, slug, work_date, formats="cardnews", images="plan"):
 이 폴더의 주제는 '{topic}'입니다. 루트 AGENTS.md, prompts/README.md,
 관련 prompts/ 파일, templates/ 양식과 style/ 가이드를 읽고 요청된 형식의
 콘텐츠를 작성하세요. 리서치와 출처를 먼저 확인하고 Core Brief로 정리한 뒤
-원고와 시각 자료 기획을 작성하세요. 확인되지 않은 사실은 단정하지 마세요.
+요청한 원고와 시각 자료 기획을 작성하세요. 두 형식이면 칼럼을 먼저 작성·검수하고
+그 칼럼을 카드뉴스로 요약하세요. 카드뉴스만 요청했다면 Core Brief에서 작성하세요.
+확인되지 않은 사실은 단정하지 마세요.
 모든 자리표시자를 실제 내용 또는 해당 없음으로 정리하세요.
 자료의 실제 조사 기준일을 원고 상단에 갱신하세요.
 

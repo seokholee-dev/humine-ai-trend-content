@@ -80,3 +80,6 @@ python3 -m unittest discover -s scripts -p 'test_*.py'
 `write_content.py`, `generate_images.py`, `openai_client.py`는 제거했습니다. 이전 `--execute`, `--mode api` 명령은 더 이상 지원하지 않습니다. 과거 구현은 Git 이력에 있으며 기존 콘텐츠와 이미지 파일은 보존했습니다.
 
 이미지 제작 지시는 `06_image_prompts.md`에 기록하고 Codex가 내장 도구에 전달합니다. 새 콘텐츠에는 별도 `image_plan.json`을 만들 필요가 없습니다. 기존 JSON은 당시 제작 기록으로 유지합니다.
+
+## 읽기용 전체 보기
+새 index.html은 최대 648px 너비의 큰 카드를 한 장씩 보여줍니다. 크게 읽기 / 모아 보기 버튼으로 전환하며 창 너비에 맞춰 비례 축소합니다. 원본 카드 규격과 개별 HTML·PNG용 CSS는 유지합니다. 이 미리보기 동작에는 JavaScript가 필요합니다.
