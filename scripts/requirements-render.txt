@@ -1,0 +1,2 @@
+# Optional: HTML output and workspace preparation use only Python's standard library.
+playwright>=1.40,<2
