@@ -112,7 +112,7 @@ plan이면 이미지 기획까지만 수행하세요.
 def main():
     parser = argparse.ArgumentParser(description="새 주제 작업 폴더·양식·Codex 요청 파일 준비")
     parser.add_argument("--topic", required=True)
-    parser.add_argument("--slug", required=True)
+    parser.add_argument("--slug", required=True, help="회사·제품·이슈를 나타내는 영문 이름 (예: zendesk-specialized-agents)")
     parser.add_argument("--date", default=date.today().isoformat())
     parser.add_argument("--format", choices=("cardnews", "column", "both"), default="cardnews")
     parser.add_argument("--images", choices=("plan", "chat"), default="plan",

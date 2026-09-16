@@ -120,7 +120,12 @@ def document(title, css, body, gallery=False):
     return '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + escape(title) + '</title><style>' + css + '\n' + extra + '</style></head><body>' + body + '</body></html>'
 
 
-def export_png(directory, count):
+def card_basename(topic_name, number):
+    slug = re.sub(r"[^a-z0-9-]+", "-", topic_name.lower()).strip("-") or "cardnews"
+    return f"{slug}-card-{number:02d}"
+
+
+def export_png(directory, count, topic_name):
     try:
         from playwright.sync_api import sync_playwright
     except ImportError as exc:
@@ -132,9 +137,9 @@ def export_png(directory, count):
         try:
             page = browser.new_page(viewport={"width": 1080, "height": 1350}, device_scale_factor=1)
             for number in range(1, count + 1):
-                page.goto((directory / "html" / f"{number:02d}.html").as_uri(), wait_until="load")
+                page.goto((directory / "html" / (card_basename(topic_name, number) + ".html")).as_uri(), wait_until="load")
                 page.evaluate("() => document.fonts.ready")
-                page.locator(".humine-card").screenshot(path=str(png_directory / f"{number:02d}.png"))
+                page.locator(".humine-card").screenshot(path=str(png_directory / (card_basename(topic_name, number) + ".png")))
         finally:
             browser.close()
 
@@ -173,7 +178,8 @@ def build(topic, root, png=False, output_root=None):
                 continue
             original = (topic / card["이미지 경로"]).resolve()
             if original not in copied:
-                filename = f"image-{len(copied) + 1:02d}{original.suffix.lower()}"
+                stem = re.sub(r"[^a-z0-9-]+", "-", original.stem.lower()).strip("-") or "image"
+                filename = f"{card_basename(topic.name, card['number'])}-{stem}{original.suffix.lower()}"
                 data = original.read_bytes()
                 (temporary / "assets" / filename).write_bytes(data)
                 copied[original] = "assets/" + filename
@@ -184,16 +190,20 @@ def build(topic, root, png=False, output_root=None):
         for card, bg in zip(cards, backgrounds):
             markup = card_html(card, len(cards), logo, bg)
             html_cards.append('<div class="frame">' + markup + '</div>')
-            (temporary / "html" / f"{card['number']:02d}.html").write_text(document(card["제목"], css, markup), encoding="utf-8")
+            (temporary / "html" / (card_basename(topic.name, card["number"]) + ".html")).write_text(document(card["제목"], css, markup), encoding="utf-8")
         (temporary / "index.html").write_text(document(topic.name, css, "".join(html_cards), True), encoding="utf-8")
         if png:
-            export_png(temporary, len(cards))
+            export_png(temporary, len(cards), topic.name)
         manifest = {
             "topic": topic.name, "source": "04_cardnews.md",
             "source_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
             "source_status": next((line[5:].strip() for line in source.splitlines()
                                    if line.startswith("- 상태:")), "unknown"),
             "build_status": "preview_not_approved", "assets": assets,
+            "cards": [{"number": c["number"],
+                       "html": "html/" + card_basename(topic.name, c["number"]) + ".html",
+                       "png": "png/" + card_basename(topic.name, c["number"]) + ".png" if png else None}
+                      for c in cards],
             "card_count": len(cards), "canvas": [1080, 1350],
             "html": "generated", "png": "generated" if png else "not_requested",
             "visual_review": "deferred", "fact_review": "not_performed_by_renderer",

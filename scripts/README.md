@@ -20,6 +20,8 @@ python3 scripts/build_cardnews.py contents/2026-09-15-ai-agent
 
 `04_cardnews.md`를 읽어 저장소 최상위 `output/주제폴더명/build-실행시각/`에 결과물을 저장합니다. 장별 HTML은 `html/`, PNG 요청 시 장별 이미지는 `png/`, 사용한 배경 원본은 `assets/`에 모읍니다. 전체 보기 `index.html`과 상태 기록 `manifest.json`은 실행 폴더 최상위에 둡니다. 매번 새 폴더를 만들므로 이전 출력은 보존됩니다.
 
+파일명에는 주제 폴더명을 붙입니다. 예를 들어 `2026-09-16-zendesk-specialized-agents-card-01.html`과 같은 이름을 사용하며 PNG도 같은 이름을 씁니다. `assets/`에는 주제명·장 번호·원본 이름을 함께 붙이고, `manifest.json`에 장별 실제 경로를 기록합니다. 새 주제의 `--slug`는 회사·제품·이슈를 나타내는 이름으로 지정하세요.
+
 - 기존 `style/cardnews.css`의 1080×1350, padding, 글자 위치를 사용합니다.
 - 사용자 제공 투명 Data Diving 로고와 축소된 로고 크기를 적용합니다.
 - CSS와 로고·배경을 HTML 안에 포함해 출력 파일을 옮겨도 연결이 유지됩니다.

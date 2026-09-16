@@ -5,6 +5,8 @@
 ## 주제 폴더
 
 폴더명: YYYY-MM-DD-topic-slug. 날짜는 작업 시작일이며 조사 대상 기간은 본문에 따로 씁니다.
+topic-slug는 `zendesk-specialized-agents`처럼 회사·제품·이슈를 담습니다. 여러 기업을 다루면 공통 이슈로 이름을 정합니다. 이미지 원본은 `zendesk-specialized-agents-02-concept-v2.png`처럼 내용을 드러내고, 도구가 읽는 `04_cardnews.md` 등의 원고 이름은 유지합니다. 기존 폴더·파일은 자동으로 바꾸지 않습니다.
+
 후보만 조사할 때는 YYYY-MM-DD-topic-candidates를 사용하고 미선정으로 기록합니다.
 
 ~~~text
