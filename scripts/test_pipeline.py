@@ -54,6 +54,25 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue((topic / "03_column.md").is_file())
         self.assertTrue((topic / "04_cardnews.md").is_file())
 
+    def test_chat_image_request_and_column_only_scope(self):
+        topic = prepare(self.root, "주제", "column-chat", "2026-09-16", "column", "chat")
+        task = (topic / "00_task.md").read_text(encoding="utf-8")
+        self.assertIn("이미지 작업: chat", task)
+        self.assertIn("유료 API로 자동 전환하지", task)
+        self.assertTrue((topic / "03_column.md").is_file())
+        self.assertFalse((topic / "04_cardnews.md").exists())
+        with self.assertRaises(ValueError):
+            prepare(self.root, "주제", "invalid-mode", "2026-09-16", images="api")
+
+    def test_chat_image_request_preserves_preparation_boundary(self):
+        topic = prepare(self.root, "주제", "chat", "2026-09-16", "both", "chat")
+        task = (topic / "00_task.md").read_text(encoding="utf-8")
+        self.assertIn("이미지 작업: chat", task)
+        self.assertIn("prompts/chat_workflow.md", task)
+        self.assertFalse(list((topic / "images").glob("*.png")))
+        with self.assertRaises(ValueError):
+            prepare(self.root, "주제", "invalid", "2026-09-16", images="api")
+
     def test_parser_rejects_unfinished_or_invalid_cards(self):
         self.assertEqual(len(renderer.parse_cards(EXAMPLE)), 5)
         for invalid in (EXAMPLE.replace("overlay", "unknown"),

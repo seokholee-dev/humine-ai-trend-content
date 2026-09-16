@@ -1,0 +1,26 @@
+{
+  "hero": {
+    "provider": "codex-built-in-image_gen",
+    "status": "generated",
+    "path": "images/hero.png",
+    "source_path": "/Users/humaiin/.codex/generated_images/01a0a884-f814-77f0-8bc5-4a5638bb7c7b/exec-611594a2-b426-40f6-b94c-2c26669c1e39.png",
+    "width": 1122,
+    "height": 1402,
+    "sha256": "66bfe7056e45cf4cf2d94150fb673cc00788c150fa063da301c06af527a5942f",
+    "prompt": "Use case: stylized-concept. Asset type: editorial illustration for a Korean enterprise AI column and a 4:5 vertical card-news background. Create a refined, tactile 3D editorial scene about designing bounded workflows for AI agents. A small arrangement of ceramic-white and translucent ice-blue architectural task modules connected by thin luminous blue paths on a deep navy surface; one deliberate amber checkpoint in the route symbolizes a human decision. Distinct sculptural shapes, physically plausible soft shadows, premium editorial art direction, generous restraint, no robot, no sci-fi city. Place the entire focal arrangement in the upper half of the portrait canvas, with the lower 45 percent fading to quiet solid midnight navy so Korean copy can be added later. Intended portrait aspect ratio 4:5. No text, numbers, letters, captions, logos, watermark, charts, or product UI. This is a conceptual illustration, not a real interface or performance diagram.",
+    "content_review": "completed: conceptual illustration, no product UI or text; upper focal scene and lower negative space",
+    "card_visual_review": "deferred"
+  },
+  "approval": {
+    "provider": "codex-built-in-image_gen",
+    "status": "generated",
+    "path": "images/approval.png",
+    "source_path": "/Users/humaiin/.codex/generated_images/01a0a884-f814-77f0-8bc5-4a5638bb7c7b/exec-3ed93d0a-d9b3-4173-8846-323657ea0106.png",
+    "width": 1122,
+    "height": 1402,
+    "sha256": "19fd3647afd266be7963b80f72c90f0b256320d3ecf3386a7f85247542571785",
+    "prompt": "Use case: stylized-concept. Asset type: matching 4:5 vertical editorial card background and column illustration. Create a premium tactile editorial 3D scene illustrating a human review checkpoint in an AI-assisted work process. On a midnight navy tabletop, several small ivory paper-like task tiles travel on a simple pale blue path toward a single amber translucent gate. A natural, anatomically correct adult human hand gently holds the last tile just before the gate, conveying considered approval. No dramatic danger, no red alerts, no robot hands. Matte ceramic textures, translucent blue details, soft studio light, carefully restrained composition. All important objects and the hand in the upper half; lower 45 percent plain deep navy negative space for later Korean typesetting. Portrait 4:5. No writing, numbers, captions, logos, watermarks, product UI, charts or implied statistics. A conceptual illustration, not a photo of an actual deployment.",
+    "content_review": "completed: conceptual illustration, no product UI or text; upper focal scene and lower negative space",
+    "card_visual_review": "deferred"
+  }
+}

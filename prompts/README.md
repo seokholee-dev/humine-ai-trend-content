@@ -4,6 +4,8 @@ AGENTS.md의 공통 규칙을 실제 작업 단계로 나눈 실행 지침입니
 
 ## 사용 순서
 
+API 키 없이 현재 대화에서 원고부터 이미지까지 진행하려면 [chat_workflow.md](chat_workflow.md)를 사용합니다. 이미지 생성까지 요청한 경우 도구로 실제 생성하고 저장·합성 상태를 구분합니다.
+
 1. [research.md](research.md): 트렌드 탐색·선정 → 01_research.md, 05_sources.md
 2. [core_brief.md](core_brief.md): 공통 기획 요약 → 02_core_brief.md
 3. [column_writer.md](column_writer.md): 칼럼 → 03_column.md

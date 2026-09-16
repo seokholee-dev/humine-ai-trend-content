@@ -1,4 +1,4 @@
-"""Generate planned image assets. Default is a free dry-run; --execute calls API."""
+"""Prepare chat image tasks by default; API calls require --mode api --execute."""
 import argparse
 import base64
 import hashlib
@@ -8,7 +8,7 @@ import re
 from openai_client import post
 
 
-def generate(topic, execute=False, max_images=4, model='gpt-image-2.5-flare'):
+def read_assets(topic, max_images):
     topic = Path(topic).resolve()
     plan = json.loads((topic / 'image_plan.json').read_text(encoding='utf-8'))
     assets = plan['assets']
@@ -21,6 +21,27 @@ def generate(topic, execute=False, max_images=4, model='gpt-image-2.5-flare'):
         ids.add(asset['id'])
         if not isinstance(asset['prompt'], str) or not asset['prompt'].strip():
             raise ValueError('이미지 프롬프트가 비어 있습니다.')
+    return assets
+
+
+def chat_tasks(topic, max_images=4):
+    topic = Path(topic).resolve()
+    assets = read_assets(topic, max_images)
+    return {
+        'mode': 'chat', 'status': 'planned', 'api_called': False,
+        'instructions': '현재 대화의 이미지 생성 도구로 생성하세요. Python은 도구를 호출하지 않습니다. '
+            '생성 결과를 확인하고 images/에 저장한 뒤 원고에 실제 경로를 연결하세요. '
+            '기존 파일은 덮어쓰지 마세요. 로컬 저장 불가 시 저장 미완료로 기록하세요. '
+            '유료 API로 자동 전환하지 마세요. 줄바꿈·넘침 검수는 보류합니다.',
+        'assets': [dict(id=a['id'], prompt=a['prompt'] +
+            '\nNo lettering, captions, logos, watermarks, or imitation product UI. Keep the designated text area simple.',
+            planned_path='images/' + a['id'] + '.png') for a in assets],
+    }
+
+
+def generate(topic, execute=False, max_images=4, model='gpt-image-2.5-flare'):
+    topic = Path(topic).resolve()
+    assets = read_assets(topic, max_images)
     directory = topic / 'images'
     if directory.is_symlink():
         raise ValueError('images 심볼릭 링크는 사용할 수 없습니다.')
@@ -62,12 +83,18 @@ def generate(topic, execute=False, max_images=4, model='gpt-image-2.5-flare'):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('topic', type=Path)
+    parser.add_argument('--mode', choices=('chat', 'api'), default='chat',
+                        help='기본 chat: 대화 도구용 요청 출력 / api: 별도 API 사용')
     parser.add_argument('--execute', action='store_true', help='실제 유료 API 호출')
     parser.add_argument('--max-images', type=int, default=4)
     parser.add_argument('--model', default='gpt-image-2.5-flare')
     args = parser.parse_args()
+    if args.mode == 'chat' and args.execute:
+        parser.error('--execute는 --mode api와 함께 사용하세요. chat 모드는 대화에서 실행합니다.')
     try:
-        print(json.dumps(generate(args.topic, args.execute, args.max_images, args.model), ensure_ascii=False, indent=2))
+        result = (chat_tasks(args.topic, args.max_images) if args.mode == 'chat'
+                  else generate(args.topic, args.execute, args.max_images, args.model))
+        print(json.dumps(result, ensure_ascii=False, indent=2))
     except (ValueError, OSError, KeyError, TypeError, IndexError) as exc:
         parser.exit(1, f'이미지 생성 중단: {exc}\n')
 

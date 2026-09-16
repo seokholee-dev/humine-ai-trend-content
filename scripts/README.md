@@ -3,6 +3,22 @@
 Python 3.9 이상을 사용합니다. 명령은 저장소를 내려받은 뒤 저장소 루트에서 실행합니다.
 작업 폴더 준비와 HTML 생성은 추가 패키지나 API 키 없이 실행할 수 있습니다.
 
+## 권장: 현재 대화에서 원고와 이미지까지
+
+```sh
+python3 scripts/generate_content.py --topic "AI 에이전트와 업무" --slug ai-agent --format both --images chat
+```
+
+생성된 `00_task.md`를 현재 대화에서 실행해 달라고 요청하면 됩니다. [대화 실행 지침](../prompts/chat_workflow.md)에 따라 Codex가 웹 조사·원고 작성·이미지 도구 실행을 진행합니다. 스크립트 자체는 작업 준비만 수행합니다. 별도 API 키는 필요하지 않으며 이미지 도구의 제공 여부·한도는 현재 환경에 따릅니다. 기본 `--images plan`은 기획까지만 요청합니다.
+
+이미지 기획 후 `image_plan.json`이 있으면 다음으로 도구용 요청을 확인합니다.
+
+```sh
+python3 scripts/generate_images.py contents/생성된-폴더
+```
+
+기본 `--mode chat`은 API 호출 없이 요청을 출력합니다. 실제 생성은 대화 도구로 수행하고, 결과 파일을 `images/`에 저장·연결한 후 기존 합성 도구로 HTML을 만듭니다. 최종 카드 PNG는 별도 렌더링 단계입니다. 도구가 결과 파일을 로컬로 전달하지 못하면 저장·합성은 미완료로 기록합니다.
+
 ## 1. 주제 작업 폴더 준비
 
 ```sh
@@ -11,7 +27,7 @@ python3 scripts/generate_content.py --topic "AI 에이전트와 업무" --slug a
 
 `contents/2026-09-15-ai-agent/`에 `00_task.md`, 리서치·Core Brief·카드뉴스·출처·이미지 기획·검수 양식과 `images/`, `output/`을 생성합니다. `--format both`는 칼럼도 추가하고 `column`은 칼럼용으로 준비합니다. 날짜 생략 시 실행일을 사용합니다. 같은 폴더가 있으면 덮어쓰지 않고 중단합니다.
 
-**generate_content.py는 작업 준비 도구입니다. AI 호출이나 사실 조사 자체를 실행하지 않습니다.** 생성된 `00_task.md`의 요청을 Codex에 전달해 저장소 규칙에 따른 원고 작성을 진행하세요. API를 통한 무인 리서치·작성은 후속 통합 범위입니다.
+**generate_content.py는 작업 준비 도구입니다. AI 호출이나 사실 조사 자체를 실행하지 않습니다.** 생성된 `00_task.md`의 요청을 Codex에 전달해 저장소 규칙에 따른 원고 작성을 진행하세요. 별도 API 방식은 아래 5절을 참조하세요.
 
 ## 2. 작성된 카드뉴스를 HTML로 출력
 
@@ -82,9 +98,9 @@ python3 scripts/write_content.py --topic "AI 에이전트와 기업 업무" --ex
 표시된 주제 폴더의 `image_plan.json`을 검토한 뒤 이미지 생성 계획을 확인합니다.
 
 ```sh
-python3 scripts/generate_images.py contents/생성된-폴더
+python3 scripts/generate_images.py contents/생성된-폴더 --mode api
 # 아래 명령부터 이미지 API 비용 발생
-python3 scripts/generate_images.py contents/생성된-폴더 --execute
+python3 scripts/generate_images.py contents/생성된-폴더 --mode api --execute
 python3 scripts/build_cardnews.py contents/생성된-폴더
 ```
 

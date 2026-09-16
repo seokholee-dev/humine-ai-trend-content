@@ -1,0 +1,18 @@
+{
+  "source": "04_cardnews.md",
+  "card_count": 8,
+  "canvas": [
+    1080,
+    1350
+  ],
+  "html": "generated",
+  "png": "not_requested",
+  "visual_review": "deferred",
+  "fact_review": "not_performed_by_renderer",
+  "generated_background_images": false,
+  "missing_backgrounds": [],
+  "background_generation_note": "generated_background_images는 렌더러 자체 생성 여부입니다. 배경 2종은 내장 image_gen으로 별도 생성 후 입력했습니다.",
+  "input_image_manifest": "../../images/manifest.json",
+  "input_generated_image_count": 2,
+  "content_review_record": "../../07_review.md"
+}

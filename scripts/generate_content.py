@@ -18,9 +18,11 @@ TEMPLATES = {
 }
 
 
-def prepare(root, topic, slug, work_date, formats="cardnews"):
+def prepare(root, topic, slug, work_date, formats="cardnews", images="plan"):
     root = Path(root).resolve()
     date.fromisoformat(work_date)
+    if images not in {"plan", "chat"}:
+        raise ValueError("이미지 작업은 plan, chat 중 선택하세요.")
     if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
         raise ValueError("slug는 소문자 영문·숫자·하이픈만 사용하세요.")
     if not topic.strip() or any(c in topic for c in "\r\n"):
@@ -62,6 +64,8 @@ def prepare(root, topic, slug, work_date, formats="cardnews"):
 
 - 작업 시작일: {work_date}
 - 산출물 형식: {formats}
+- 실행 방식: 현재 대화에서 작성 / 별도 API 호출 없음
+- 이미지 작업: {images} (plan: 기획까지, chat: 대화 도구로 실제 생성)
 - 상태: 작업 준비 완료 / 원고 미작성
 
 ## Codex에 전달할 요청
@@ -74,8 +78,14 @@ def prepare(root, topic, slug, work_date, formats="cardnews"):
 자료의 실제 조사 기준일을 원고 상단에 갱신하세요.
 
 사실·내용 검수를 수행하고 07_review.md에 기록하세요.
-줄바꿈·넘침 검수는 사용자 요청에 따라 보류합니다. 이미지를 생성하거나
-게시했다고 주장하지 마세요. 이 작업 준비 파일은 완성 원고가 아닙니다.
+줄바꿈·넘침 검수는 사용자 요청에 따라 보류합니다.
+prompts/chat_workflow.md를 따라 이미지 작업 범위를 처리하세요.
+chat이면 이미지 생성 도구로 생성하고, 접근 가능한 결과 파일을 images/에
+저장한 뒤 원고에 실제 경로를 연결하세요. 도구가 없거나 파일을 옮길 수 없으면
+해당 단계를 미완료로 기록하고 유료 API로 자동 전환하지 마세요.
+plan이면 이미지 기획까지만 수행하세요.
+실제로 생성하지 않은 이미지나 외부 게시를 완료했다고 주장하지 마세요.
+이 작업 준비 파일은 완성 원고가 아닙니다.
 
 ## 카드뉴스 HTML 생성
 
@@ -103,10 +113,12 @@ def main():
     parser.add_argument("--slug", required=True)
     parser.add_argument("--date", default=date.today().isoformat())
     parser.add_argument("--format", choices=("cardnews", "column", "both"), default="cardnews")
+    parser.add_argument("--images", choices=("plan", "chat"), default="plan",
+                        help="plan: 이미지 기획까지 / chat: Codex 대화 도구로 이미지 생성 요청")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
     try:
-        path = prepare(args.root, args.topic, args.slug, args.date, args.format)
+        path = prepare(args.root, args.topic, args.slug, args.date, args.format, args.images)
     except (ValueError, OSError) as exc:
         parser.exit(1, f"준비 실패: {exc}\n")
     print(f"작업 파일 준비 완료: {path}\n00_task.md의 요청으로 원고 작성을 시작하세요. AI 생성은 실행하지 않았습니다.")

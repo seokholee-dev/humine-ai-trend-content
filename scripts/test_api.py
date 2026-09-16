@@ -2,6 +2,9 @@ import base64
 import json
 from pathlib import Path
 import tempfile
+import io
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 import generate_images as images
@@ -16,6 +19,43 @@ class ApiTests(unittest.TestCase):
         with patch.object(images,'post') as call:
             self.assertEqual(images.generate(self.root)[0]['status'],'planned')
             call.assert_not_called()
+    def test_chat_cli_defaults_to_no_api_and_no_generated_files(self):
+        with patch('sys.argv', ['generate_images.py', str(self.root)]), \
+                patch.object(images, 'post') as call, \
+                patch('sys.stdout', new_callable=io.StringIO) as output:
+            images.main()
+            result = json.loads(output.getvalue())
+        call.assert_not_called()
+        self.assertEqual(result['mode'], 'chat')
+        self.assertEqual(result['status'], 'planned')
+        self.assertFalse(result['api_called'])
+        self.assertIn('office scene', result['assets'][0]['prompt'])
+        self.assertFalse((self.root / 'images').exists())
+
+    def test_chat_execute_cannot_accidentally_call_api(self):
+        with patch('sys.argv', ['generate_images.py', str(self.root), '--execute']), \
+                patch.object(images, 'post') as call, \
+                patch('sys.stderr', new_callable=io.StringIO):
+            with self.assertRaises(SystemExit) as stopped:
+                images.main()
+        self.assertEqual(stopped.exception.code, 2)
+        call.assert_not_called()
+    def test_chat_tasks_never_call_api_or_create_images(self):
+        with patch.object(images, 'post') as call:
+            result = images.chat_tasks(self.root)
+            self.assertEqual(result['mode'], 'chat')
+            self.assertEqual(result['assets'][0]['planned_path'], 'images/hero.png')
+            self.assertFalse((self.root / 'images').exists())
+            call.assert_not_called()
+    def test_cli_defaults_to_chat_and_rejects_execute(self):
+        command = [sys.executable, str(Path(images.__file__)), str(self.root)]
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['mode'], 'chat')
+        rejected = subprocess.run(command + ['--execute'], capture_output=True, text=True)
+        self.assertNotEqual(rejected.returncode, 0)
+        self.assertIn('--mode api', rejected.stderr)
+        self.assertFalse((self.root / 'images').exists())
     def test_success_reuses_and_changed_prompt_preserves_asset(self):
         png=b'\x89PNG\r\n\x1a\nfixture'
         with patch.object(images,'post',return_value={'data':[{'b64_json':base64.b64encode(png).decode()}]}) as call:

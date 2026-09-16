@@ -32,6 +32,8 @@ templates/column_template.md와 style/humine_content_guide.md가 실제로 있�
 변동 가능한 기능·가격·날짜·수치의 주장 가까이에 [S번호]를 붙인다.
 새로운 사실이 필요하면 원문 확인 후 01_research.md, 05_sources.md, 02_core_brief.md부터 갱신한다.
 원고만 요청받은 경우 본문을 파일로 저장하며 외부 채널에 게시하지 않는다.
+현재 대화에서 직접 작성할 수 있으며 별도 API 실행은 필요하지 않다.
+이미지까지 요청받으면 원고 검수 후 visual_planner.md와 chat_workflow.md에 따라 생성·저장하고 본문에 실제 파일을 연결한다.
 
 ## 완료 기준
 
