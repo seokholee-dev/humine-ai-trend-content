@@ -2,6 +2,7 @@
 """Render the repository's card-news Markdown into self-contained HTML, optionally PNG."""
 import argparse
 import base64
+import hashlib
 from datetime import datetime, timezone
 from html import escape
 import json
@@ -124,44 +125,76 @@ def export_png(directory, count):
         from playwright.sync_api import sync_playwright
     except ImportError as exc:
         raise ValueError("PNG 출력은 scripts/requirements-render.txt 설치와 playwright install chromium이 필요합니다.") from exc
+    png_directory = directory / "png"
+    png_directory.mkdir()
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         try:
             page = browser.new_page(viewport={"width": 1080, "height": 1350}, device_scale_factor=1)
             for number in range(1, count + 1):
-                page.goto((directory / f"{number:02d}.html").as_uri(), wait_until="load")
+                page.goto((directory / "html" / f"{number:02d}.html").as_uri(), wait_until="load")
                 page.evaluate("() => document.fonts.ready")
-                page.locator(".humine-card").screenshot(path=str(directory / f"{number:02d}.png"))
+                page.locator(".humine-card").screenshot(path=str(png_directory / f"{number:02d}.png"))
         finally:
             browser.close()
 
 
-def build(topic, root, png=False):
+def build(topic, root, png=False, output_root=None):
     topic = Path(topic).resolve()
     root = Path(root).resolve()
-    cards = parse_cards((topic / "04_cardnews.md").read_text(encoding="utf-8"))
+    source = (topic / "04_cardnews.md").read_text(encoding="utf-8")
+    cards = parse_cards(source)
     css = (root / "style/cardnews.css").read_text(encoding="utf-8")
     logo = image_uri(root / "style/assets/datadiving-logo.png")
     # Resolve all assets before writing any output.
     backgrounds = [background_uri(topic, c.get("이미지 경로", "")) for c in cards]
-    output = topic / "output"
+    destination = Path(output_root) if output_root is not None else root / "output"
+    if destination.is_symlink():
+        raise ValueError("출력 루트에 심볼릭 링크를 사용할 수 없습니다.")
+    destination = destination.resolve()
+    if destination == topic or topic in destination.parents:
+        raise ValueError("출력 루트는 원고 주제 폴더 밖으로 지정하세요.")
+    output = destination / topic.name
     if output.is_symlink():
-        raise ValueError("output은 실제 주제 폴더 안의 디렉터리여야 합니다.")
-    output.mkdir(exist_ok=True)
+        raise ValueError("주제 출력 폴더에 심볼릭 링크를 사용할 수 없습니다.")
+    if output == topic or topic in output.parents:
+        raise ValueError("결과 폴더가 원고 주제 폴더와 겹칩니다.")
+    output.mkdir(parents=True, exist_ok=True)
     run_name = datetime.now(timezone.utc).strftime("build-%Y%m%dT%H%M%S-%fZ")
     temporary = Path(tempfile.mkdtemp(prefix=".build-", dir=output))
     final = output / run_name
     try:
+        (temporary / "html").mkdir()
+        (temporary / "assets").mkdir()
+        assets = []
+        copied = {}
+        for card, bg in zip(cards, backgrounds):
+            if bg is None:
+                continue
+            original = (topic / card["이미지 경로"]).resolve()
+            if original not in copied:
+                filename = f"image-{len(copied) + 1:02d}{original.suffix.lower()}"
+                data = original.read_bytes()
+                (temporary / "assets" / filename).write_bytes(data)
+                copied[original] = "assets/" + filename
+            assets.append({"card": card["number"], "file": copied[original],
+                           "source": card["이미지 경로"],
+                           "sha256": hashlib.sha256(original.read_bytes()).hexdigest()})
         html_cards = []
         for card, bg in zip(cards, backgrounds):
             markup = card_html(card, len(cards), logo, bg)
             html_cards.append('<div class="frame">' + markup + '</div>')
-            (temporary / f"{card['number']:02d}.html").write_text(document(card["제목"], css, markup), encoding="utf-8")
+            (temporary / "html" / f"{card['number']:02d}.html").write_text(document(card["제목"], css, markup), encoding="utf-8")
         (temporary / "index.html").write_text(document(topic.name, css, "".join(html_cards), True), encoding="utf-8")
         if png:
             export_png(temporary, len(cards))
         manifest = {
-            "source": "04_cardnews.md", "card_count": len(cards), "canvas": [1080, 1350],
+            "topic": topic.name, "source": "04_cardnews.md",
+            "source_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
+            "source_status": next((line[5:].strip() for line in source.splitlines()
+                                   if line.startswith("- 상태:")), "unknown"),
+            "build_status": "preview_not_approved", "assets": assets,
+            "card_count": len(cards), "canvas": [1080, 1350],
             "html": "generated", "png": "generated" if png else "not_requested",
             "visual_review": "deferred", "fact_review": "not_performed_by_renderer",
             "generated_background_images": False,
@@ -180,9 +213,11 @@ def main():
     parser.add_argument("topic", type=Path)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--png", action="store_true")
+    parser.add_argument("--output-root", type=Path,
+                        help="결과물 전용 루트 (기본: 저장소/output). 주제/실행시각으로 분리")
     args = parser.parse_args()
     try:
-        result = build(args.topic, args.root, args.png)
+        result = build(args.topic, args.root, args.png, args.output_root)
     except (ValueError, OSError) as exc:
         parser.exit(1, f"출력 실패: {exc}\n")
     print(f"생성 완료: {result}\n줄바꿈·넘침 및 사실 검수는 이 명령에서 수행하지 않았습니다.")

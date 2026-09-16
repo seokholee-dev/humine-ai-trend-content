@@ -84,7 +84,8 @@
 - 05_sources.md: 주장과 연결된 출처 목록
 - 06_image_prompts.md: 시각 자료 기획과 제작 프롬프트
 - images/: 실제 이미지 파일
-- output/: 검수한 최종 배포용 파일
+- 결과물은 저장소 최상위 output/YYYY-MM-DD-topic-slug/build-실행시각/에 저장한다. 기획 Markdown과 분리하며 HTML·선택적 PNG·사용 자산·manifest.json을 포함한다. 출력 성공만으로 검수 완료·배포 승인으로 표시하지 않는다.
+- 외부 출력 루트는 build_cardnews.py의 --output-root로 지정한다. 기존 주제 내부 output/은 이전 기록으로 보존한다.
 
 각 원고 상단에는 작성일, 조사 기준일, 상태(초안/검수 필요/검수 완료)를 기록한다.
 상태는 수행한 검수에 근거해 부여하며, 검수 완료가 외부 게시 완료를 의미하지 않는다.

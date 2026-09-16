@@ -54,7 +54,7 @@ def prepare(root, topic, slug, work_date, formats="cardnews", images="plan"):
                 text = text.replace(key, topic)
             text = text.replace("{{YYYY-MM-DD}}", work_date)
             (temporary / output).write_text(text, encoding="utf-8")
-        for folder in ("images", "output"):
+        for folder in ("images",):
             (temporary / folder).mkdir()
             (temporary / folder / "README.md").write_text(
                 "# 작업 예정 영역\n\n현재 생성된 결과물은 없습니다. 실제 제작 후 상태를 갱신하세요.\n",
@@ -95,6 +95,8 @@ plan이면 이미지 기획까지만 수행하세요.
 
 실제 이미지가 있으면 해당 장의 '이미지 경로' 항목에 images/ 아래 상대 경로를
 기록하세요. 이미지가 없으면 기본 배경을 사용하며 이미지 생성 완료로 세지 않습니다.
+결과물은 저장소 루트 output/{target.name}/build-실행시각/에 생성됩니다.
+다른 출력 루트를 사용하려면 --output-root 경로를 지정하세요.
 """
         (temporary / "00_task.md").write_text(task, encoding="utf-8")
         # The target is never replaced; preexisting user work is preserved.

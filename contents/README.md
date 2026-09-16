@@ -18,8 +18,7 @@ contents/
     ├── 05_sources.md
     ├── 06_image_prompts.md
     ├── 07_review.md
-    ├── images/                 # 실제 생성·확보한 이미지
-    └── output/                 # 실제 렌더링한 최종 결과물
+    └── images/                 # 실제 생성·확보한 이미지 원본
 ~~~
 
 위 폴더는 구조 예시입니다. 실제 제작물은 [첫 주제 검수 기록](2026-09-16-agent-work-delegation/07_review.md)에서 확인할 수 있습니다.
@@ -32,7 +31,7 @@ contents/
 4. 리서치·출처 → Core Brief → 요청한 칼럼·카드뉴스 → 시각 자료 기획 순으로 작성합니다.
 5. 카드뉴스는 cover / gradient / split / overlay / cta 중 적절한 틀을 사용합니다. 공통 CSS의 위치·여백을 유지합니다.
 6. 실제 검수를 수행할 때 07_review.md를 작성합니다. 줄바꿈·넘침 검수는 현재 사용자 요청에 따라 보류합니다.
-7. 이미지가 실제로 생성되었을 때 images/에, 최종 결과물이 만들어졌을 때 output/에 저장합니다.
+7. 이미지가 실제로 생성되었을 때 images/에, 합성 결과는 저장소 최상위 output/주제명/build-실행시각/에 저장합니다. 기획 Markdown은 결과물에 복사하지 않습니다.
 
 ## 관리 원칙
 
@@ -46,3 +45,5 @@ contents/
 ## 첫 실행 요청 예시
 
 > 최근 7일 AI 트렌드를 조사하고 추천 주제로 Core Brief와 카드뉴스 원고를 만들어줘. prompts/와 templates/를 사용하고, 줄바꿈·넘침 검수와 이미지 출력은 이번에는 제외해줘.
+
+기존 주제 내부 output/은 과거 결과로 보존합니다. 새 출력 구조는 [출력 안내](../output/README.md)를 참조하세요.

@@ -86,19 +86,54 @@ class PipelineTests(unittest.TestCase):
         text = EXAMPLE.replace("변화의 의미를 읽습니다", '<script>alert("x")</script>')
         (topic / "04_cardnews.md").write_text(text, encoding="utf-8")
         result = renderer.build(topic, self.root)
-        page = (result / "02.html").read_text(encoding="utf-8")
+        page = (result / "html/02.html").read_text(encoding="utf-8")
         self.assertIn("&lt;script&gt;", page)
         self.assertNotIn("<script>", page)
         self.assertIn("기능 확인용 예시입니다.", page)
-        self.assertIn("가상 활용 예시", (result / "03.html").read_text(encoding="utf-8"))
-        cover = (result / "01.html").read_text(encoding="utf-8")
+        self.assertIn("가상 활용 예시", (result / "html/03.html").read_text(encoding="utf-8"))
+        cover = (result / "html/01.html").read_text(encoding="utf-8")
         self.assertIn("data:image/png;base64,", cover)
         self.assertIn("AI 트렌드를<br>업무의 언어로", cover)
         manifest = json.loads((result / "manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["visual_review"], "deferred")
         self.assertEqual(manifest["png"], "not_requested")
-        self.assertEqual(len(list(result.glob("*.html"))), 6)
+        self.assertEqual(len(list((result / "html").glob("*.html"))), 5)
         self.assertNotEqual(renderer.build(topic, self.root), result)
+
+    def test_external_output_is_portable_and_preserves_source(self):
+        topic = self.topic()
+        image_root = topic / "images"
+        shutil.copyfile(self.root / "style/assets/datadiving-logo.png", image_root / "example.png")
+        draft = EXAMPLE.replace("- 레이아웃: cover", "- 이미지 경로: images/example.png\n- 레이아웃: cover")
+        (topic / "04_cardnews.md").write_text(draft)
+        destination = self.root / "delivery"
+        result = renderer.build(topic, self.root, output_root=destination)
+        self.assertEqual(result.parent, destination.resolve() / topic.name)
+        self.assertFalse((topic / "output").exists())
+        self.assertFalse(list(result.rglob("*.md")))
+        self.assertEqual((topic / "04_cardnews.md").read_text(), draft)
+        self.assertEqual((result / "assets/image-01.png").read_bytes(), (image_root / "example.png").read_bytes())
+        snapshot = json.loads((result / "manifest.json").read_text())
+        self.assertEqual(snapshot["build_status"], "preview_not_approved")
+        self.assertEqual(snapshot["assets"][0]["card"], 1)
+        moved = self.root / "moved-delivery"
+        shutil.copytree(result, moved)
+        self.assertIn("data:image/png;base64,", (moved / "html/01.html").read_text())
+        self.assertTrue((moved / "index.html").exists())
+        self.assertNotEqual(renderer.build(topic, self.root, output_root=destination), result)
+
+    def test_output_cannot_overlap_topic_or_follow_topic_symlink(self):
+        topic = self.topic()
+        (topic / "04_cardnews.md").write_text(EXAMPLE)
+        with self.assertRaises(ValueError):
+            renderer.build(topic, self.root, output_root=topic / "output")
+        with self.assertRaises(ValueError):
+            renderer.build(topic, self.root, output_root=topic.parent)
+        delivery = self.root / "delivery"
+        delivery.mkdir()
+        (delivery / topic.name).symlink_to(topic, target_is_directory=True)
+        with self.assertRaises(ValueError):
+            renderer.build(topic, self.root, output_root=delivery)
 
     def test_asset_escape_is_rejected(self):
         topic = self.topic()
@@ -112,7 +147,7 @@ class PipelineTests(unittest.TestCase):
         with patch.object(renderer, "export_png", side_effect=ValueError("fixture failure")):
             with self.assertRaises(ValueError):
                 renderer.build(topic, self.root, png=True)
-        self.assertEqual(list((topic / "output").glob("*build-*")), [])
+        self.assertEqual(list((self.root / "output" / topic.name).iterdir()), [])
 
 
 if __name__ == "__main__":

@@ -18,13 +18,25 @@ python3 scripts/generate_content.py --topic "AI 에이전트와 업무" --slug a
 python3 scripts/build_cardnews.py contents/2026-09-15-ai-agent
 ```
 
-`04_cardnews.md`를 읽어 `output/build-실행시각/`에 장별 `01.html`부터 마지막 장까지, 전체 보기 `index.html`, 상태 기록 `manifest.json`을 저장합니다. 매번 새 폴더를 만들므로 이전 출력은 보존됩니다.
+`04_cardnews.md`를 읽어 저장소 최상위 `output/주제폴더명/build-실행시각/`에 결과물을 저장합니다. 장별 HTML은 `html/`, PNG 요청 시 장별 이미지는 `png/`, 사용한 배경 원본은 `assets/`에 모읍니다. 전체 보기 `index.html`과 상태 기록 `manifest.json`은 실행 폴더 최상위에 둡니다. 매번 새 폴더를 만들므로 이전 출력은 보존됩니다.
 
 - 기존 `style/cardnews.css`의 1080×1350, padding, 글자 위치를 사용합니다.
 - 사용자 제공 투명 Data Diving 로고와 축소된 로고 크기를 적용합니다.
 - CSS와 로고·배경을 HTML 안에 포함해 출력 파일을 옮겨도 연결이 유지됩니다.
 - 배경이 없으면 임시 색상 배경을 사용합니다. 이미지 생성 완료로 기록하지 않습니다.
 - 줄바꿈·넘침과 사실 검수는 수행하지 않으며, 상태 기록에도 구분해 남깁니다.
+
+### 별도 출력 폴더
+
+```sh
+python3 scripts/build_cardnews.py contents/2026-09-15-ai-agent --output-root /원하는/배포폴더
+```
+
+`--output-root` 아래에도 주제명/실행시각별로 저장합니다. 외부 폴더는 쓰기 권한이 필요하며, 원고 폴더와 겹치는 출력 위치는 거부합니다. 상대 경로는 명령을 실행한 현재 폴더 기준입니다.
+
+결과물에는 기획·검수 Markdown을 복사하지 않습니다. HTML에는 이미지·CSS·로고가 포함되어 실행 폴더를 옮겨도 열 수 있습니다. `assets/`는 이번 합성에 실제 사용한 배경만 중복 없이 복사하며, 장별 대응과 원고 해시는 manifest.json에 기록합니다. 출력 성공은 배포 승인이나 시각 검수 완료가 아니며 기본 상태는 `preview_not_approved`입니다. 출처·이미지 사용 조건은 원본 작업 문서에서 관리합니다.
+
+기존 contents/주제/output/은 과거 결과물로 보존하며 새 결과는 만들지 않습니다. 칼럼 배포용 변환은 아직 이 카드 합성 도구의 범위에 포함하지 않습니다.
 
 ### 원고 입력 규칙
 

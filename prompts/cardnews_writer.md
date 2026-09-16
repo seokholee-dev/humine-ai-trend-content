@@ -34,6 +34,7 @@ templates/cardnews_template.md, style/humine_content_guide.md, style/의 시각 
 - 본문
 - 보조 문구·조건·한계(필요 시)
 - 시각 자료 지시: 개념도/실제 화면/사진/타이포그래피 중 목적에 맞게 지정
+- 장별 시각 자산 ID와 확보 방식: 자료 확보 / 내장 생성 / 도식 제작. 각 장에 독립된 시각 자료를 기획하고 상세는 06_image_prompts.md에 기록한다. 이미지 경로는 실제 파일 확보 후에만 연결한다.
 - 레이아웃 유형: cover / gradient / split / overlay / cta 중 선택. 표지는 cover, 마무리는 cta를 기본으로 하고 본문은 정보량에 맞게 선택
 - 관련 출처 ID와 화면에 표시할 짧은 출처
 

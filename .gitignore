@@ -7,3 +7,7 @@ __pycache__/
 .DS_Store
 contents/.prepare-*/
 contents/*/output/.build-*/
+
+# Rebuildable delivery packages; keep the output guide tracked.
+/output/*
+!/output/README.md
