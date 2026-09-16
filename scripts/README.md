@@ -1,33 +1,16 @@
-# 콘텐츠 제작 실행 파일
+# 로컬 제작 도구
 
-Python 3.9 이상을 사용합니다. 명령은 저장소를 내려받은 뒤 저장소 루트에서 실행합니다.
-작업 폴더 준비와 HTML 생성은 추가 패키지나 API 키 없이 실행할 수 있습니다.
+원고·이미지 제작은 VS Code 대화에서 Codex가 수행합니다. Python 3.9 이상을 사용하는 아래 도구는 파일 준비와 로컬 합성만 담당합니다. 별도 유료 API 실행 코드와 옵션은 제거했습니다.
 
-## 권장: 현재 대화에서 원고와 이미지까지
+## 1. 주제 폴더 준비
 
 ```sh
 python3 scripts/generate_content.py --topic "AI 에이전트와 업무" --slug ai-agent --format both --images chat
 ```
 
-생성된 `00_task.md`를 현재 대화에서 실행해 달라고 요청하면 됩니다. [대화 실행 지침](../prompts/chat_workflow.md)에 따라 Codex가 웹 조사·원고 작성·이미지 도구 실행을 진행합니다. 스크립트 자체는 작업 준비만 수행합니다. 별도 API 키는 필요하지 않으며 이미지 도구의 제공 여부·한도는 현재 환경에 따릅니다. 기본 `--images plan`은 기획까지만 요청합니다.
+날짜를 생략하면 실행일을 사용합니다. `--format`은 `column`, `cardnews`, `both` 중 선택합니다. `--images chat`은 작업 요청에 내장 이미지 생성을 포함하고, 기본값 `plan`은 기획까지만 요청합니다. 명령 자체가 원고나 이미지를 생성하지는 않습니다.
 
-이미지 기획 후 `image_plan.json`이 있으면 다음으로 도구용 요청을 확인합니다.
-
-```sh
-python3 scripts/generate_images.py contents/생성된-폴더
-```
-
-기본 `--mode chat`은 API 호출 없이 요청을 출력합니다. 실제 생성은 대화 도구로 수행하고, 결과 파일을 `images/`에 저장·연결한 후 기존 합성 도구로 HTML을 만듭니다. 최종 카드 PNG는 별도 렌더링 단계입니다. 도구가 결과 파일을 로컬로 전달하지 못하면 저장·합성은 미완료로 기록합니다.
-
-## 1. 주제 작업 폴더 준비
-
-```sh
-python3 scripts/generate_content.py --topic "AI 에이전트와 업무" --slug ai-agent --date 2026-09-15 --format cardnews
-```
-
-`contents/2026-09-15-ai-agent/`에 `00_task.md`, 리서치·Core Brief·카드뉴스·출처·이미지 기획·검수 양식과 `images/`, `output/`을 생성합니다. `--format both`는 칼럼도 추가하고 `column`은 칼럼용으로 준비합니다. 날짜 생략 시 실행일을 사용합니다. 같은 폴더가 있으면 덮어쓰지 않고 중단합니다.
-
-**generate_content.py는 작업 준비 도구입니다. AI 호출이나 사실 조사 자체를 실행하지 않습니다.** 생성된 `00_task.md`의 요청을 Codex에 전달해 저장소 규칙에 따른 원고 작성을 진행하세요. 별도 API 방식은 아래 5절을 참조하세요.
+생성된 `00_task.md`를 실행해 달라고 대화에서 요청하세요. 기존 주제는 새로 만들지 않고 이어서 작업합니다. 같은 이름의 폴더는 덮어쓰지 않습니다. 아래 출력 예시는 `contents/2026-09-15-ai-agent`를 실제 주제 경로로 바꿔 사용하세요.
 
 ## 2. 작성된 카드뉴스를 HTML로 출력
 
@@ -77,35 +60,9 @@ python3 -m unittest discover -s scripts -p 'test_*.py'
 
 작업 폴더 생성, 기존 작업 보존, 잘못된 입력, 5종 레이아웃의 HTML 생성, 문구 보존, HTML 이스케이프, 이미지 경로 제한, 출력 실패 처리를 확인합니다. 브라우저·실제 PNG·줄바꿈·넘침 검수는 이 테스트에 포함하지 않습니다.
 
-## 5. OpenAI API 연결 (기본은 무료 실행 계획 확인)
 
-`write_content.py`는 웹 검색 후 리서치를 기반으로 Core Brief·칼럼·7장 카드뉴스·출처·이미지 계획을 새 주제 폴더에 생성합니다. 기본 모델은 `gpt-5.4-mini`이며 `--model`로 변경합니다. 출력은 검수 전 초안입니다. 실제 검색 응답·출처 주석과 사용량도 보존합니다.
+## 제거된 API 경로
 
-```sh
-python3 scripts/write_content.py --topic "AI 에이전트와 기업 업무"
-```
+`write_content.py`, `generate_images.py`, `openai_client.py`는 제거했습니다. 이전 `--execute`, `--mode api` 명령은 더 이상 지원하지 않습니다. 과거 구현은 Git 이력에 있으며 기존 콘텐츠와 이미지 파일은 보존했습니다.
 
-위 명령은 API 호출 없이 계획만 확인합니다. 실제 호출은 키를 설정한 환경에서 `--execute`를 명시해야 합니다. **ChatGPT 구독과 API 요금은 별도입니다.** 웹 검색·텍스트·이미지 호출마다 비용이 발생할 수 있습니다. 현재 실계정 유료 호출은 검증하지 않았습니다.
-
-키는 `OPENAI_API_KEY` 환경 변수로 전달합니다. 키를 원고, GitHub, 채팅에 기록하지 마세요. `.env` 자동 로딩은 하지 않습니다. 다음은 macOS/Linux에서 값을 화면에 표시하지 않고 입력하는 방법입니다.
-
-```sh
-read -s OPENAI_API_KEY
-export OPENAI_API_KEY
-python3 scripts/write_content.py --topic "AI 에이전트와 기업 업무" --execute
-```
-
-표시된 주제 폴더의 `image_plan.json`을 검토한 뒤 이미지 생성 계획을 확인합니다.
-
-```sh
-python3 scripts/generate_images.py contents/생성된-폴더 --mode api
-# 아래 명령부터 이미지 API 비용 발생
-python3 scripts/generate_images.py contents/생성된-폴더 --mode api --execute
-python3 scripts/build_cardnews.py contents/생성된-폴더
-```
-
-이미지 모델 기본값은 `gpt-image-2.5-flare`, 기본 호출 상한은 계획당 4개입니다. 상한은 비용 금액 상한이 아닙니다. 자동 유료 재시도는 하지 않습니다. 성공한 동일 계획의 이미지는 재사용하고, 프롬프트나 모델을 바꿀 때는 새 자산 ID를 사용해 원본을 보존합니다. 카드 원고에 기록된 이미지 경로와 계획 ID가 연결됩니다. 이미지 생성 후 사실·구도 확인과 보류 중인 시각 검수는 별도로 진행합니다.
-
-API 키가 없거나 계정에 해당 모델 권한이 없으면 실제 생성은 실행되지 않습니다. 일부 호출 성공 후 실패할 수 있으므로 실패 시에도 사용량을 확인하세요. 원고 생성의 후속 단계 실패 시 성공한 리서치는 `-failed` 폴더에 보존합니다.
-
-공식 문서: [Responses](https://developers.openai.com/api/docs/guides/text) · [이미지 생성](https://developers.openai.com/api/docs/guides/image-generation)
+이미지 제작 지시는 `06_image_prompts.md`에 기록하고 Codex가 내장 도구에 전달합니다. 새 콘텐츠에는 별도 `image_plan.json`을 만들 필요가 없습니다. 기존 JSON은 당시 제작 기록으로 유지합니다.
