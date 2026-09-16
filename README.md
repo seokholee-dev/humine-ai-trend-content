@@ -1,4 +1,4 @@
-# Humine AI Trend Content
+# Humaiin AI Trend Content
 
 AI 트렌드를 기업 업무와 교육 관점에서 해석하고, 하나의 리서치를 카드뉴스와 칼럼으로 확장하는 Private 작업공간입니다.
 
@@ -10,7 +10,9 @@ AI 트렌드를 기업 업무와 교육 관점에서 해석하고, 하나의 리
 - 콘텐츠 로고: 사용자가 제공한 투명 배경 Data Diving PNG
 - 로고 표시 영역: 360×80. 표지 하단과 CTA 패널 하단에 동일 자산 사용
 - 줄바꿈·넘침 검수: 사용자 요청에 따라 후속 단계로 보류
-- 실제 주제별 원고·이미지와 자동 실행·최종 이미지 출력 기능은 아직 생성하지 않았습니다.
+- scripts/ 실행 코드 반영 완료: 작업 폴더 준비, API 리서치·원고 생성, AI 이미지 생성, HTML 및 선택적 PNG 출력.
+- 로컬 기능 테스트 12개 통과. 실제 유료 API 호출과 PNG 출력 검증은 아직 미실시.
+- 실제 주제별 콘텐츠는 아직 생성하지 않았습니다. API 명령은 기본 실행 시 호출 없이 계획만 표시하며 --execute 옵션에서 비용이 발생합니다.
 
 ## 파일 구조
 
@@ -44,6 +46,17 @@ humine-ai-trend-content/
 │   └── assets/
 │       ├── README.md
 │       └── datadiving-logo.png
+├── scripts/
+│   ├── README.md
+│   ├── generate_content.py
+│   ├── write_content.py
+│   ├── generate_images.py
+│   ├── openai_client.py
+│   ├── build_cardnews.py
+│   ├── requirements-render.txt
+│   ├── cardnews.example.md
+│   ├── test_pipeline.py
+│   └── test_api.py
 └── contents/
     └── README.md
 ~~~
@@ -99,3 +112,13 @@ CTA에는 별도 배경 없이 배치하고, 어두운 표지에서는 검정 �
 ## 첫 요청 예시
 
 > 최근 7일 AI 트렌드를 조사하고 추천 주제로 Core Brief와 카드뉴스 원고를 만들어줘. prompts/와 templates/를 사용하고, 줄바꿈·넘침 검수와 이미지 출력은 이번에는 제외해줘.
+
+## 실행 방법과 API 비용
+
+[실행 가이드](scripts/README.md)를 따릅니다. Python 3.9 이상이 필요합니다. 기본 모델은 원고 gpt-5.4-mini, 이미지 gpt-image-2.5-flare이며 명령 옵션으로 변경할 수 있습니다. 계정의 모델 사용 권한과 결제 설정은 별도 확인이 필요합니다.
+
+- API 키 없는 작업 폴더 준비·HTML 출력: 추가 API 요금 없음.
+- write_content.py / generate_images.py: --execute 없이 계획 확인만 실행.
+- --execute: OPENAI_API_KEY가 설정된 환경에서 실제 API 호출. ChatGPT 구독과 별도 과금.
+- 이미지·원고·사실 검수·시각 검수·외부 게시의 완료 상태는 각각 구분합니다.
+- 저장소 URL과 기존 경로명은 호환성을 위해 유지하며 브랜드 영문 표기는 Humaiin을 사용합니다. 카드 로고는 Data Diving 원본입니다.
